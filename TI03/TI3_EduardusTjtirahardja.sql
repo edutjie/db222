@@ -76,7 +76,7 @@ SELECT CONCAT(u.fname, ' ', u.lname) AS name, u.email
 FROM (SELECT t.email
       FROM transaction t
       GROUP BY 1
-      HAVING COUNT(*) = (SELECT COUNT(*) FROM payment_method)) t_pm
+      HAVING COUNT(DISTINCT t.pmid) = (SELECT COUNT(*) FROM payment_method)) t_pm
          INNER JOIN user_acc u USING (email);
 
 
