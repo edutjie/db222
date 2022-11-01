@@ -24,6 +24,8 @@ WHERE id_dokter NOT IN (SELECT id_dokter
 
 
 -- 5
+-- ASUMSI: Jumlah pasien dihitung berdasarkan id_rawat_inap,
+-- jadi Pasien yang dirawat tidak harus unik
 SELECT d.nama,
        SUM(CASE WHEN dri.id_rawat_inap IS NOT NULL THEN 1 ELSE 0 END) AS jumlah_pasien_ri
 FROM dokter d
@@ -33,9 +35,10 @@ ORDER BY 1;
 
 
 -- 6
-SELECT EXTRACT(MONTH FROM tgl_lahir) AS bulan, nama
+SELECT EXTRACT(MONTH FROM tgl_lahir) AS bulan, COUNT(*)
 FROM pasien
-ORDER BY 1, 2;
+GROUP BY 1
+ORDER BY 1;
 
 
 -- 7
@@ -68,14 +71,14 @@ WHERE id_pasien NOT IN (SELECT id_pasien
 
 
 -- 11
-SELECT *
-FROM pasien
+SELECT p.*
+FROM pasien p
          INNER JOIN rawat_inap ri USING (id_pasien)
          INNER JOIN kamar k USING (id_kamar)
 WHERE k.jenis LIKE 'VIP%'
 UNION
-SELECT *
-FROM pasien
+SELECT p.*
+FROM pasien p
          INNER JOIN rawat_inap ri USING (id_pasien)
          INNER JOIN kamar k USING (id_kamar)
 WHERE k.jenis = 'VVIP';
