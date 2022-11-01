@@ -36,6 +36,14 @@ WHERE EXISTS (
 	)
 	AND Note <> '';
 
+SELECT TF.FoodName
+FROM TRANSACTION_FOOD as TF , USER_acc as U
+WHERE EXISTS(
+	SELECT TF.Note FROM TRANSACTION_FOOD as TF, USER_acc AS U  WHERE TF.Note IS NOT NULL and U.FName = 'Carissa' and U.LName = 'Magnolia')
+AND
+TF.Note IS NOT NULL and U.FName = 'Carissa' and U.LName = 'Magnolia' and u.Email = tf.Email;
+
+
 --5
 SELECT DISTINCT U.FName, U.LName
 FROM USER_ACC U, TRANSACTION T, COURIER C, TRANSACTION_ACTOR TA, TRANSACTION_FOOD TF
@@ -48,6 +56,18 @@ WHERE TF.Email = T.Email AND TF.Datetime = T.Datetime AND
 		FROM TRANSACTION T, TRANSACTION_FOOD TF
 		WHERE TF.RName = 'KFC' AND TF.RBranch = 'Lenteng Agung' AND TF.Email = T.Email AND TF.Datetime = T.Datetime
 	);
+
+SELECT FName, LName
+FROM USER_ACC as U, TRANSACTION as T, COURIER as C
+WHERE C.email = T.CourierId AND T.RName = 'KFC' AND
+T.RBranch = 'Margonda' AND C.Email NOT IN (
+SELECT Email
+FROM TRANSACTION_FOOD
+WHERE RName = 'KFC' AND
+RBranch = 'Lenteng Agung'
+);
+
+
 
 --6
 SELECT CONCAT(FName, ' ', LName) AS Name, Email
@@ -71,6 +91,21 @@ WHERE U.Email IN (
 	HAVING COUNT(J.PMId) = (SELECT COUNT(*) FROM PAYMENT_METHOD)
 );
 
+SELECT U.Email, U.FName, U.LName
+FROM USER_ACC as U, TRANSACTION as T, PAYMENT_METHOD AS PM
+WHERE T.Email = U.Email
+GROUP BY 1,2,3
+HAVING COUNT(DISTINCT T.PMId) = (SELECT COUNT(*) FROM payment_method);
+
+SELECT FName, LName, U.Email
+FROM USER_ACC as U, TRANSACTION as T, PAYMENT_METHOD as PM
+WHERE U.Email = T.Email
+GROUP BY Fname, Lname, U.Email
+HAVING Count(DISTINCT PMId)=Count(DISTINCT PM.Id)
+;
+
+
+
 --8.
 SELECT FoodName, MAX(Total)
 FROM (
@@ -84,6 +119,14 @@ FROM (
 ) foo
 GROUP BY 1
 ORDER BY 2 DESC;
+
+SELECT TF.FoodName,  F.Price,  SUM(Amount) AS JumlahPembelian
+FROM TRANSACTION_FOOD as TF, FOOD as F
+WHERE TF.RName = 'KFC' AND TF.RBranch = 'Margonda' AND F.FoodName = TF.FoodName
+GROUP BY TF.FoodName, F.Price
+ORDER BY (JumlahPembelian) DESC
+LIMIT 1;
+
 
 --9.
 SELECT R.RName, R.RBranch, Amount, MinPrice, MaxPrice
@@ -105,3 +148,14 @@ WHERE id_promo IN (
 	GROUP BY RP.PId
 	HAVING COUNT(RP.PId) >= 10
 );
+
+SELECT DISTINCT PromoName
+FROM SPECIAL_DAY_PROMO as SDP, RESTAURANT_PROMO, PROMO as P
+WHERE SDP.id_special_day_promo = P.id_promo AND current_timestamp <= Date
+UNION
+SELECT DISTINCT PromoName
+FROM RESTAURANT_PROMO as RP, PROMO as P
+WHERE RP.PId = P.id_promo
+GROUP BY Pid, PromoName
+HAVING COUNT(Pid)>=10;
+

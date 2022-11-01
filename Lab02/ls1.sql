@@ -1,5 +1,5 @@
 -- 2
-SELECT o.nama
+SELECT DISTINCT o.nama
 FROM obat o
          INNER JOIN pemberian_obat po USING (id_obat)
 WHERE po.id_shift_perawat IN (SELECT sp.id_shift_perawat
@@ -82,6 +82,7 @@ WHERE k.jenis = 'VVIP';
 
 
 -- 12
+-- ASUMSI: query perawat yang pernah merawat semua pasien yang berjenis kelamin perempuan
 SELECT p2.nama, p2.jenis_kelamin
 FROM perawat p2
          INNER JOIN shift_perawat sp USING (id_perawat)
