@@ -60,3 +60,9 @@ CREATE INDEX index_nama_dokter
 
 CREATE INDEX index_nama_perawat
     ON perawat (nama);
+
+
+DROP INDEX index_nama_pasien;
+DROP INDEX index_nama_obat;
+DROP INDEX index_nama_dokter;
+DROP INDEX index_nama_perawat;
