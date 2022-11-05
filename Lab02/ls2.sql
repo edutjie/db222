@@ -58,5 +58,10 @@ CREATE INDEX index_tgl_keluar_rawat_inap
 CREATE INDEX index_nama_perawat
     ON perawat (nama);
 
-CREATE INDEX index_nama_perawat
+CREATE INDEX index_alamat_pasien
     ON pasien (alamat);
+
+DROP INDEX index_harga_kamar;
+DROP INDEX index_tgl_keluar_rawat_inap;
+DROP INDEX index_nama_perawat;
+DROP INDEX index_alamat_pasien;
