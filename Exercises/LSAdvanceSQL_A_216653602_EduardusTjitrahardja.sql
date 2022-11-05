@@ -9,7 +9,10 @@ GROUP BY 1;
 
 
 -- 2
-SELECT CONCAT(fname, ' ', lname) AS name
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname) AS name
 FROM employee e
          INNER JOIN department d ON d.dnumber = e.dno
          INNER JOIN dependent d2 ON e.ssn = d2.essn
@@ -18,7 +21,10 @@ WHERE d.mgr_ssn = e.ssn
 
 
 -- 3
-SELECT CONCAT(e.fname, ' ', e.lname) AS name,
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname) AS name,
        e.salary,
        d.dname,
        d2.dependent_name,
@@ -29,13 +35,31 @@ FROM employee e
 
 
 -- 4
-SELECT CONCAT(fname, ' ', lname) AS name
-FROM employee
+-- without EXISTS
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname) AS name
+FROM employee e
 WHERE salary > (SELECT AVG(salary) FROM employee);
+-- with EXISTS
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname) AS name
+FROM employee e
+WHERE EXISTS(
+              SELECT AVG(e2.salary)
+              FROM employee e2
+              HAVING e.salary > AVG(e2.salary)
+          );
 
 
 -- 5
-SELECT CONCAT(fname, ' ', lname) AS name
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname) AS name
 FROM employee
 WHERE ssn IN (SELECT DISTINCT super_ssn
               FROM employee
@@ -43,19 +67,24 @@ WHERE ssn IN (SELECT DISTINCT super_ssn
 
 
 -- 6
-SELECT name,
-       salary,
-       salary + bonus AS salary_after_bonus
-FROM (SELECT e.ssn, CONCAT(fname, ' ', lname) AS name, e.salary, SUM(wo.hours * 1000) AS bonus
-      FROM employee e
-               LEFT JOIN works_on wo ON e.ssn = wo.essn
-               LEFT JOIN project p ON p.pnumber = wo.pno
-      GROUP BY 1, 2, 3) AS e_bonus;
+SELECT CONCAT(fname,
+              ' ',
+              CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+              lname)                   AS name,
+       e.salary,
+       e.salary + SUM(wo.hours * 1000) AS bonus
+FROM employee e
+         LEFT JOIN works_on wo ON e.ssn = wo.essn
+         LEFT JOIN project p ON p.pnumber = wo.pno
+GROUP BY 1, 2;
 
 
 -- 7
 SELECT *
-FROM (SELECT CONCAT(e.fname, ' ', e.lname)                          AS name,
+FROM (SELECT CONCAT(fname,
+                    ' ',
+                    CASE WHEN minit IS NULL THEN '' ELSE CONCAT(minit, '. ') END,
+                    lname)                                          AS name,
              e.ssn,
              SUM(CASE WHEN p.pnumber IS NOT NULL THEN 1 ELSE 0 END) AS n_project
       FROM employee e
