@@ -49,20 +49,14 @@ ORDER BY alamat
 LIMIT 10;
 
 -- 3b
-CREATE INDEX index_nama_pasien
-    ON pasien (nama);
+CREATE INDEX index_harga_kamar
+    ON kamar (harga);
 
-CREATE INDEX index_nama_obat
-    ON obat (nama);
-
-CREATE INDEX index_nama_dokter
-    ON dokter (nama);
+CREATE INDEX index_tgl_keluar_rawat_inap
+    ON rawat_inap (tgl_keluar);
 
 CREATE INDEX index_nama_perawat
     ON perawat (nama);
 
-
-DROP INDEX index_nama_pasien;
-DROP INDEX index_nama_obat;
-DROP INDEX index_nama_dokter;
-DROP INDEX index_nama_perawat;
+CREATE INDEX index_nama_perawat
+    ON pasien (alamat);
