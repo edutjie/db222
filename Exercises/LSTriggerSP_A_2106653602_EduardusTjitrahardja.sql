@@ -43,7 +43,7 @@ BEGIN
     FROM dependent
     WHERE essn = NEW.essn;
 
-    IF (n_dependent = 3) THEN
+    IF (n_dependent >= 3) THEN
         RAISE EXCEPTION 'Tanggungan yang dimiliki oleh seorang employee tidak boleh lebih dari 3 orang.';
     END IF;
 
@@ -53,7 +53,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER checkTotalDependentTrigger
-    BEFORE INSERT
+    BEFORE INSERT OR UPDATE
     ON dependent
     FOR EACH ROW
 EXECUTE PROCEDURE checkTotalDependent();
