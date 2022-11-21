@@ -1,18 +1,11 @@
--- alter table
-ALTER TABLE RESTAURANT_PROMO
-    DROP CONSTRAINT RESTAURANT_PROMO_PKEY,
-    ADD PRIMARY KEY (RNAME, RBRANCH, PID),
-    DROP COLUMN FOODNAME,
-    ADD FOREIGN KEY (RNAME, RBRANCH) REFERENCES RESTAURANT (RNAME, RBRANCH);
+-- Eduardus Tjitrahardja | 2106653602 | Basdat A | A4
 
-
--- CRD Kategori Restoran
-CREATE OR REPLACE FUNCTION checkRestaurantCategory()
+CREATE OR REPLACE FUNCTION checkPesananSelsai()
     RETURNS trigger AS
 $$
 DECLARE
     dfee       double precision;
-    ffee       integer;
+    ffee       double precision;
     cid        varchar(50);
     restname   varchar(50);
     restbranch varchar(25);
@@ -54,13 +47,18 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE TRIGGER checkRestaurantCategoryTrigger
-    BEFORE INSERT
+CREATE TRIGGER checkPesananSelsaiTrigger
+    AFTER INSERT
     ON transaction_history
     FOR EACH ROW
-EXECUTE PROCEDURE checkRestaurantCategory();
+EXECUTE PROCEDURE checkPesananSelsai();
 
 
+-- tester
 INSERT INTO transaction_history(email, datetime, tsid, datetimestatus)
 VALUES ('gtinseyc@tuttocitta.it', '2022-09-10 00:00:00.000000', '63569189fc13ae3f8d0000ef',
-        '2022-09-14 00:15:00.000000')
+        '2022-09-14 00:15:00.000000');
+
+
+
+
