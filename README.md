@@ -1,2 +1,2 @@
 # db222
-My labs and assignments in Database course at University of indonesia 
+My labs and assignments for Database course at University of indonesia 
